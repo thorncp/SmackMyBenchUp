@@ -14,15 +14,13 @@ namespace SmackMyBenchUp
 
             foreach (var b in bench)
             {
-                Stopwatch stopwatch = new Stopwatch();
-
                 for (int i = 0; i < runs; i++)
                 {
+                    Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
                     b.Action();
                     stopwatch.Stop();
-                    b.RunTimes.Add(stopwatch.ElapsedMilliseconds);
-                    stopwatch.Reset();
+                    b.Stopwatches.Add(stopwatch);
                 }
             }
 
@@ -33,13 +31,18 @@ namespace SmackMyBenchUp
     public class Result
     {
         public int Runs { get; set; }
-        public List<long> RunTimes { get; set; }
         public string Label { get; set; }
         public Action Action { get; set; }
+        public List<Stopwatch> Stopwatches { get; set; }
+
+        public IEnumerable<long> RunTimes
+        {
+            get { return Stopwatches.Select(s => s.ElapsedMilliseconds); }
+        }
 
         public Result()
         {
-            RunTimes = new List<long>();
+            Stopwatches = new List<Stopwatch>();
         }
 
         public double Average()

@@ -30,7 +30,7 @@ namespace Runner
 
             foreach (var result in results)
             {
-                Console.Out.WriteLine(string.Format("{0} averaged {1}ms on {2} runs", result.Label, result.Average(), result.Runs));
+                Console.Out.WriteLine(string.Format("{0} averaged {1}ms on {2} runs", result.Label, result.Average(), result.RunCount));
             }
         }
     }

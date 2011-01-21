@@ -35,7 +35,7 @@ namespace SmackMyBenchUp
 
     public class Result
     {
-        public int Runs { get; set; }
+        public int RunCount { get; set; }
         public string Label { get; set; }
         public Action Action { get; set; }
         public List<Stopwatch> Stopwatches { get; set; }
@@ -68,7 +68,7 @@ namespace SmackMyBenchUp
 
         public void Blar(string label, Action action)
         {
-            Add(new Result{ Label = label, Action = action, Runs = runs });
+            Add(new Result{ Label = label, Action = action, RunCount = runs });
         }
     }
 }

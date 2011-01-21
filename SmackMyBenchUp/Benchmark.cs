@@ -7,28 +7,7 @@ namespace SmackMyBenchUp
 {
     public static class Benchmark
     {
-        public static void Profile(int runs, Dictionary<string, Action> actions)
-        {
-            foreach (var action in actions)
-            {
-                Stopwatch stopwatch = new Stopwatch();
-
-                var times = new List<long>();
-
-                for (int i = 0; i < runs; i++)
-                {
-                    stopwatch.Start();
-                    action.Value();
-                    stopwatch.Stop();
-                    times.Add(stopwatch.ElapsedMilliseconds);
-                    stopwatch.Reset();
-                }
-
-                Console.Out.WriteLine(string.Format("{0} averaged {1}ms", action.Key, times.Average()));
-            }
-        }
-
-        public static void Profile2(int runs, Action<Bench> action)
+        public static IEnumerable<Result> Profile(int runs, Action<Bench> action)
         {
             Bench bench = new Bench();
             action(bench);
@@ -37,28 +16,44 @@ namespace SmackMyBenchUp
             {
                 Stopwatch stopwatch = new Stopwatch();
 
-                var times = new List<long>();
-
                 for (int i = 0; i < runs; i++)
                 {
                     stopwatch.Start();
-                    b.Value();
+                    b.Action();
                     stopwatch.Stop();
-                    times.Add(stopwatch.ElapsedMilliseconds);
+                    b.RunTimes.Add(stopwatch.ElapsedMilliseconds);
                     stopwatch.Reset();
                 }
-
-                Console.Out.WriteLine(string.Format("{0} averaged {1}ms", b.Key, times.Average()));
             }
+
+            return bench;
+        }
+    }
+
+    public class Result
+    {
+        public int Runs { get; set; }
+        public List<long> RunTimes { get; set; }
+        public string Label { get; set; }
+        public Action Action { get; set; }
+
+        public Result()
+        {
+            RunTimes = new List<long>();
+        }
+
+        public double Average()
+        {
+            return RunTimes.Average();
         }
     }
 
     // todo: better name
-    public class Bench : Dictionary<string, Action>
+    public class Bench : List<Result>
     {
         public void Blar(string label, Action action)
         {
-            Add(label, action);
+            Add(new Result{ Label = label, Action = action });
         }
     }
 }

@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using SmackMyBenchUp;
 
 namespace Runner
 {
     public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Benchmark.Profile(10, new Dictionary<string, Action> {
-                { "hi", () => { int x = 42; } },
-                { "yo", () => { int x = 1337; } }
-            });
-
-            Benchmark.Profile2(10, bench => {
+            var results = Benchmark.Profile(10, bench => {
                 bench.Blar("hi", () => { int x = 42; });
                 bench.Blar("yo", () => { int x = 1337; });
             });
+
+            foreach (var result in results)
+            {
+                Console.Out.WriteLine(string.Format("{0} averaged {1}ms", result.Label, result.Average()));
+            }
         }
     }
 }

@@ -7,9 +7,14 @@ namespace SmackMyBenchUp
 {
     public static class Benchmark
     {
+        public static IEnumerable<Result> Profile(IEnumerable<int> runs, Action<Bench> action)
+        {
+            return runs.SelectMany(run => Profile(run, action));
+        }
+
         public static IEnumerable<Result> Profile(int runs, Action<Bench> action)
         {
-            Bench bench = new Bench();
+            Bench bench = new Bench(runs);
             action(bench);
 
             foreach (var b in bench)
@@ -54,9 +59,16 @@ namespace SmackMyBenchUp
     // todo: better name
     public class Bench : List<Result>
     {
+        private int runs;
+
+        public Bench(int runs)
+        {
+            this.runs = runs;
+        }
+
         public void Blar(string label, Action action)
         {
-            Add(new Result{ Label = label, Action = action });
+            Add(new Result{ Label = label, Action = action, Runs = runs });
         }
     }
 }

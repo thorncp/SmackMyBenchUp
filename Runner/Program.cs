@@ -19,6 +19,19 @@ namespace Runner
             {
                 Console.Out.WriteLine(string.Format("{0} averaged {1}ms", result.Label, result.Average()));
             }
+
+            Console.Out.WriteLine();
+
+            // todo: nice api for generating these run counts. hmmmm use linq with ranges?
+            results = Benchmark.Profile(new[] {1, 10, 100}, bench => {
+                bench.Blar("hi", () => Thread.Sleep(randy.Next((50))));
+                bench.Blar("yo", () => Thread.Sleep(randy.Next((50))));
+            });
+
+            foreach (var result in results)
+            {
+                Console.Out.WriteLine(string.Format("{0} averaged {1}ms on {2} runs", result.Label, result.Average(), result.Runs));
+            }
         }
     }
 }

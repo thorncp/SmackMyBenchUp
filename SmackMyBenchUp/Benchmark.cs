@@ -1,62 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 namespace SmackMyBenchUp
 {
     public static class Benchmark
     {
-        public static void Report(IEnumerable<int> runs, Action<Reporter> definition)
+        public static IEnumerable<Result> Report(IEnumerable<int> runCounts, Action<Profiler> definition)
         {
-            Report(runs, Console.Out, definition);
+            return Profile<ConsoleReporter>(runCounts, definition).ToList();
         }
 
-        public static void Report(IEnumerable<int> runs, TextWriter writer, Action<Reporter> definition)
+        public static IEnumerable<Result> Report(int runCount, Action<Profiler> definition)
         {
-            foreach (var run in runs)
-            {
-                Report(run, definition, writer);
-            }
+            return Profile<ConsoleReporter>(runCount, definition);
         }
 
-        public static IEnumerable<Result> Report(int runs, Action<Reporter> definition, TextWriter writer)
+        public static IEnumerable<Result> Profile(IEnumerable<int> runCounts, Action<Profiler> definition)
         {
-            Reporter reporter = new Reporter(runs, writer);
-            definition(reporter);
-
-            reporter.SetUp();
-
-            foreach (var entry in reporter)
-            {
-                reporter.PreBenchmark(entry);
-
-                for (int i = 0; i < runs; i++)
-                {
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
-                    entry.Action();
-                    stopwatch.Stop();
-                    entry.Stopwatches.Add(stopwatch);
-                }
-
-                reporter.PostBenchmark(entry);
-            }
-
-            reporter.TearDown();
-
-            return reporter;
+            return runCounts.SelectMany(run => Profile<Profiler>(run, definition)).ToList();
         }
 
-        public static IEnumerable<Result> Profile(IEnumerable<int> runs, Action<Profiler> definition)
+        public static IEnumerable<Result> Profile(int runCount, Action<Profiler> definition)
         {
-            return runs.SelectMany(run => Profile(run, definition)).ToList();
+            return Profile<Profiler>(runCount, definition);
         }
 
-        public static IEnumerable<Result> Profile(int runs, Action<Profiler> definition)
+        public static IEnumerable<Result> Profile<T>(IEnumerable<int> runCounts, Action<Profiler> definition) where T : Profiler, new()
         {
-            Profiler profiler = new Profiler(runs);
+            return runCounts.SelectMany(run => Profile<T>(run, definition)).ToList();
+        }
+
+        public static IEnumerable<Result> Profile<T>(int runCount, Action<Profiler> definition) where T : Profiler, new()
+        {
+            T profiler = new T { RunCount = runCount };
             definition(profiler);
 
             profiler.SetUp();
@@ -65,7 +43,7 @@ namespace SmackMyBenchUp
             {
                 profiler.PreBenchmark(entry);
 
-                for (int i = 0; i < runs; i++)
+                for (int i = 0; i < runCount; i++)
                 {
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();

@@ -5,12 +5,7 @@ namespace SmackMyBenchUp
 {
     public class Profiler : List<Result>
     {
-        protected readonly int RunCount;
-
-        public Profiler(int runCount)
-        {
-            RunCount = runCount;
-        }
+        public int RunCount { get; set; }
 
         public void Report(string label, Action action)
         {

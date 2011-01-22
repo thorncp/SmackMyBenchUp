@@ -9,7 +9,7 @@ namespace SmackMyBenchUp
     {
         public static IEnumerable<Result> Report(IEnumerable<int> runCounts, Action<Profiler> definition)
         {
-            return Profile<ConsoleReporter>(runCounts, definition).ToList();
+            return Profile<ConsoleReporter>(runCounts, definition);
         }
 
         public static IEnumerable<Result> Report(int runCount, Action<Profiler> definition)
@@ -19,7 +19,7 @@ namespace SmackMyBenchUp
 
         public static IEnumerable<Result> Profile(IEnumerable<int> runCounts, Action<Profiler> definition)
         {
-            return runCounts.SelectMany(run => Profile<Profiler>(run, definition)).ToList();
+            return runCounts.SelectMany(run => Profile<Profiler>(run, definition));
         }
 
         public static IEnumerable<Result> Profile(int runCount, Action<Profiler> definition)

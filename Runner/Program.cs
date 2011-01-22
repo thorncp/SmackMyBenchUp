@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using SmackMyBenchUp;
 
@@ -10,7 +11,7 @@ namespace Runner
         {
             Random randy = new Random();
 
-            var results = Benchmark.Profile(10, reporter => {
+            /*var results = Benchmark.Profile(10, reporter => {
                 reporter.Report("hi", () => Thread.Sleep(randy.Next(50)));
                 reporter.Report("yo", () => Thread.Sleep(randy.Next(50)));
             });
@@ -31,9 +32,9 @@ namespace Runner
             foreach (var result in results)
             {
                 Console.Out.WriteLine(string.Format("{0} averaged {1}ms on {2} runs", result.Label, result.Average(), result.RunCount));
-            }
+            }*/
 
-            Benchmark.Report(new[] {1, 10, 100}, reporter => {
+            var results = Benchmark.Report(new[] {1, 10, 100}, reporter => {
                 reporter.Report("hi", () => Thread.Sleep(randy.Next(50)));
                 reporter.Report("yo", () => Thread.Sleep(randy.Next(50)));
             });

@@ -11,8 +11,8 @@ namespace Runner
             Random randy = new Random();
 
             /*var results = Benchmark.Profile(10, reporter => {
-                reporter.Report("hi", () => Thread.Sleep(randy.Next((50))));
-                reporter.Report("yo", () => Thread.Sleep(randy.Next((50))));
+                reporter.Report("hi", () => Thread.Sleep(randy.Next(50)));
+                reporter.Report("yo", () => Thread.Sleep(randy.Next(50)));
             });
 
             foreach (var result in results)
@@ -24,8 +24,8 @@ namespace Runner
 
             // todo: nice api for generating these run counts. hmmmm use linq with ranges?
             results = Benchmark.Profile(new[] {1, 10, 100}, reporter => {
-                reporter.Report("hi", () => Thread.Sleep(randy.Next((50))));
-                reporter.Report("yo", () => Thread.Sleep(randy.Next((50))));
+                reporter.Report("hi", () => Thread.Sleep(randy.Next(50)));
+                reporter.Report("yo", () => Thread.Sleep(randy.Next(50)));
             });
 
             foreach (var result in results)
@@ -34,8 +34,8 @@ namespace Runner
             }*/
 
             Benchmark.Report(new[] {1, 10, 100}, reporter => {
-                reporter.Report("hi", () => Thread.Sleep(randy.Next((50))));
-                reporter.Report("yo", () => Thread.Sleep(randy.Next((50))));
+                reporter.Report("hi", () => Thread.Sleep(randy.Next(50)));
+                reporter.Report("yo", () => Thread.Sleep(randy.Next(50)));
             });
         }
     }

@@ -7,17 +7,17 @@ namespace SmackMyBenchUp
 {
     public static class Benchmark
     {
-        public static IEnumerable<Result> Profile(IEnumerable<int> runs, Action<Bench> action)
+        public static IEnumerable<Result> Profile(IEnumerable<int> runs, Action<Reporter> action)
         {
-            return runs.SelectMany(run => Profile(run, action));
+            return runs.SelectMany(run => Profile(run, action)).ToList();
         }
 
-        public static IEnumerable<Result> Profile(int runs, Action<Bench> action)
+        public static IEnumerable<Result> Profile(int runs, Action<Reporter> action)
         {
-            Bench bench = new Bench(runs);
-            action(bench);
+            Reporter reporter = new Reporter(runs);
+            action(reporter);
 
-            foreach (var b in bench)
+            foreach (var b in reporter)
             {
                 for (int i = 0; i < runs; i++)
                 {
@@ -29,46 +29,7 @@ namespace SmackMyBenchUp
                 }
             }
 
-            return bench;
-        }
-    }
-
-    public class Result
-    {
-        public int RunCount { get; set; }
-        public string Label { get; set; }
-        public Action Action { get; set; }
-        public List<Stopwatch> Stopwatches { get; set; }
-
-        public IEnumerable<long> RunTimes
-        {
-            get { return Stopwatches.Select(s => s.ElapsedMilliseconds); }
-        }
-
-        public Result()
-        {
-            Stopwatches = new List<Stopwatch>();
-        }
-
-        public double Average()
-        {
-            return RunTimes.Average();
-        }
-    }
-
-    // todo: better name
-    public class Bench : List<Result>
-    {
-        private int runs;
-
-        public Bench(int runs)
-        {
-            this.runs = runs;
-        }
-
-        public void Blar(string label, Action action)
-        {
-            Add(new Result{ Label = label, Action = action, RunCount = runs });
+            return reporter;
         }
     }
 }

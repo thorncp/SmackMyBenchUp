@@ -3,18 +3,26 @@ using System.Collections.Generic;
 
 namespace SmackMyBenchUp
 {
-    public class Profiler : List<Result>
+    public class Profiler
     {
-        public int RunCount { get; set; }
+        private readonly List<Entry> entries = new List<Entry>();
+        public bool WarmUp { get; set; }
 
-        public void Report(string label, Action action)
+        public IEnumerable<Entry> Execute()
         {
-            Add(new Result{ Label = label, Action = action, RunCount = RunCount });
+            foreach (var entry in entries)
+            {
+                entry.Execute(WarmUp);
+                yield return entry;
+            }
         }
 
-        public virtual void SetUp() {}
-        public virtual void TearDown() {}
-        public virtual void PreBenchmark(Result result) {}
-        public virtual void PostBenchmark(Result result) {}
+        public void Profile(string handle, Action action)
+        {
+            entries.Add(new Entry {
+                Handle = handle,
+                Action = action
+            });
+        }
     }
 }

@@ -7,19 +7,26 @@ namespace SmackMyBenchUp
     {
         public string Handle { get; set; }
         public Action Action { get; set; }
+        public bool WarmUp { get; set; }
         public TimeSpan Elapsed { get; set; }
+        public TimeSpan WarmUpElapsed { get; set; }
 
-        public void Execute(bool warmUp = false)
+        public void Execute()
         {
-            if (warmUp) Action();
+            if (WarmUp) WarmUpElapsed = Measure();
 
+            Elapsed = Measure();
+        }
+
+        private TimeSpan Measure()
+        {
             var stopwatch = new Stopwatch();
 
             stopwatch.Start();
             Action();
             stopwatch.Stop();
-
-            Elapsed = stopwatch.Elapsed;
+            
+            return stopwatch.Elapsed;
         }
     }
 }

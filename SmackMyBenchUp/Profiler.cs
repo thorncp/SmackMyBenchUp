@@ -12,16 +12,18 @@ namespace SmackMyBenchUp
         {
             foreach (var entry in entries)
             {
-                entry.Execute(WarmUp);
-                yield return entry;
+                entry.Execute();
             }
+			
+			return entries;
         }
 
         public void Profile(string handle, Action action)
         {
             entries.Add(new Entry {
                 Handle = handle,
-                Action = action
+                Action = action,
+                WarmUp = WarmUp
             });
         }
     }

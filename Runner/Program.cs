@@ -10,23 +10,28 @@ namespace Runner
     {
         static void Main()
         {
-            var range = new Range(2000, 20000, 2000);
+            var range = new Range(2000, 10000, 2000);
 
             var results = Benchmark.Profile(profiler => {
-                profiler.Profile("max", () => range.Max());
-                profiler.Profile("min", () => range.Min());
+                profiler.WarmUp = true;
+
+                foreach(int i in range)
+                {
+                    var list = Generate(i);
+                    profiler.Profile("linq: " + i, () => list.LinqJoin(","));
+                    profiler.Profile("loop: " + i, () => list.Join(","));
+                }
             });
+
+            Console.Out.WriteLine("Warm Up");
 
             foreach (var result in results)
             {
-                Console.Out.WriteLine("{0} - {1}: ", result.Handle, result.Elapsed);
+                Console.Out.WriteLine("{0} - {1}: ", result.Handle, result.WarmUpElapsed);
             }
 
-            results = Benchmark.Profile(profiler => {
-                profiler.WarmUp = true;
-                profiler.Profile("max", () => range.Max());
-                profiler.Profile("min", () => range.Min());
-            });
+            Console.Out.WriteLine();
+            Console.Out.WriteLine("Real Deal");
 
             foreach (var result in results)
             {

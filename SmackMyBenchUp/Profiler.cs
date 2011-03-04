@@ -14,8 +14,8 @@ namespace SmackMyBenchUp
             {
                 entry.Execute();
             }
-			
-			return entries;
+            
+            return entries;
         }
 
         public void Profile(string handle, Action action)

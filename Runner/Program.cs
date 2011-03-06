@@ -10,12 +10,12 @@ namespace Runner
     {
         static void Main()
         {
-            var range = new Range(2000, 10000, 2000);
+            var range = new Range(2000, 10000);
 
-            var results = Benchmark.Profile(profiler => {
+            Report report = Benchmark.Profile(profiler => {
                 profiler.WarmUp = true;
 
-                foreach(int i in range)
+                foreach (int i in range.Step(2000))
                 {
                     var list = Generate(i);
                     profiler.Profile("linq: " + i, () => list.LinqJoin(","));
@@ -25,7 +25,7 @@ namespace Runner
 
             Console.Out.WriteLine("Warm Up");
 
-            foreach (var result in results)
+            foreach (var result in report)
             {
                 Console.Out.WriteLine("{0} - {1}: ", result.Handle, result.WarmUpElapsed);
             }
@@ -33,13 +33,13 @@ namespace Runner
             Console.Out.WriteLine();
             Console.Out.WriteLine("Real Deal");
 
-            foreach (var result in results)
+            foreach (var result in report)
             {
                 Console.Out.WriteLine("{0} - {1}: ", result.Handle, result.Elapsed);
             }
         }
 
-        private static List<string> Generate(int size)
+        public static List<string> Generate(int size)
         {
             var list = new List<string>();
 

@@ -1,26 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace SmackMyBenchUp
 {
     public class Profiler
     {
-        private readonly List<Entry> entries = new List<Entry>();
         public bool WarmUp { get; set; }
+        private readonly Report report = new Report();
 
-        public IEnumerable<Entry> Execute()
+        public Report Execute()
         {
-            foreach (var entry in entries)
+            foreach (var entry in report)
             {
                 entry.Execute();
             }
-            
-            return entries;
+
+            return report;
         }
 
         public void Profile(string handle, Action action)
         {
-            entries.Add(new Entry {
+            report.Entries.Add(new Entry {
                 Handle = handle,
                 Action = action,
                 WarmUp = WarmUp
